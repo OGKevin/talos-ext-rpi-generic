@@ -1,0 +1,23 @@
+# https://taskfile.dev
+
+version: "3"
+vars:
+  GREETING: Hello, World!
+  TAG: dev-031
+tasks:
+  build-binary:
+    cmds:
+      - go mod verify
+      - go build -o _out/generic-pi .
+  build-container:
+    cmds:
+      - docker build . -t ghcr.io/ogkevin/talos-ext-generic-pi:{{.TAG}}
+  push-container:
+    deps:
+      - build-container
+    cmds:
+      - docker push ghcr.io/ogkevin/talos-ext-generic-pi:{{.TAG}}
+  default:
+    cmds:
+      - echo "{{.GREETING}}"
+    silent: true
