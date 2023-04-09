@@ -3,7 +3,7 @@
 version: "3"
 vars:
   GREETING: Hello, World!
-  TAG: dev-032
+  TAG: v1.0.0-alpha.0
 tasks:
   build-binary:
     cmds:
