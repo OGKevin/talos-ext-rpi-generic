@@ -60,7 +60,11 @@ func main() {
 		log.WithError(err).Fatal(err.Error())
 	}
 
-	defer m.Unmount(0)
+	defer func() {
+		if err := m.Unmount(0); err != nil {
+			log.WithError(err).Warn("failed to umnount disk")
+		}
+	}()
 
 	partitions, err = disk.PartitionsWithContext(ctx, true)
 	if err != nil {
@@ -86,11 +90,11 @@ func main() {
 
 	log.Debug("dumping old config, and afterwards the new one")
 	if log.IsLevelEnabled(logrus.DebugLevel) {
-		fmt.Print("OLD CONFIG")
-		fmt.Print(string(oldBootConfig))
+		fmt.Println("### OLD CONFIG ###")
+		fmt.Println(string(oldBootConfig))
 
-		fmt.Print("NEW CONFIG")
-		fmt.Print(string(defaultBootConfig))
+		fmt.Println("### NEW CONFIG TO BE WRITTEN ###")
+		fmt.Println(string(defaultBootConfig))
 	}
 
 	if err := os.WriteFile(bootConfigFilePath, []byte(defaultBootConfig), 0600); err != nil {
@@ -98,8 +102,18 @@ func main() {
 		log.WithError(err).Fatal()
 	}
 
-	log.Info("boot config written")
+	if log.IsLevelEnabled(logrus.DebugLevel) {
+		oldBootConfig, err := os.ReadFile(bootConfigFilePath)
+		if err != nil {
+			err = errors.Wrapf(err, "failed to open current boot config.")
+			log.WithError(err).Fatal()
+		}
 
+		fmt.Println("### NEWLY WRITTEN CONFIG ###")
+		fmt.Println(string(oldBootConfig))
+	}
+
+	log.Info("boot config written")
 }
 
 func listDir(path string) error {
