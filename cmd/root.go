@@ -31,7 +31,10 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-var cfgFile string
+var (
+	cfgFile  string
+	logLevel string
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -49,20 +52,24 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(cobraInit)
 
 	rootCmd.PersistentFlags().
 		StringVar(&cfgFile, "config", "", "config file (default is $HOME/.talos-ext-rpi.yaml)")
-	rootCmd.PersistentFlags().String("log.level", "info", "")
+
+	rootCmd.PersistentFlags().StringVar(&logLevel, "log.level", "info", "")
 
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-// initConfig reads in config file and ENV variables if set.
+// cobraInit reads in config file and ENV variables if set.
+func cobraInit() {
+	initConfig()
+	setupLogging()
+}
+
 func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-	} else {
+	if cfgFile == "" {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
@@ -77,4 +84,31 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		slog.Info("config file loaded", slog.String("file", viper.ConfigFileUsed()))
 	}
+}
+
+func setupLogging() {
+	var lvl slog.Level
+
+	switch logLevel {
+	case "info":
+		lvl = slog.LevelInfo
+	case "debug":
+		lvl = slog.LevelDebug
+	default:
+		lvl = slog.LevelInfo
+	}
+
+	slog.SetDefault(
+		slog.New(
+			slog.NewTextHandler(
+				os.Stdout, &slog.HandlerOptions{
+					AddSource:   false,
+					Level:       lvl,
+					ReplaceAttr: nil,
+				},
+			),
+		),
+	)
+
+	slog.Info("log level has been set", slog.String("level", lvl.String()))
 }

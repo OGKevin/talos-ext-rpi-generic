@@ -6,9 +6,9 @@ package cmd
 
 import (
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"golang.org/x/exp/slog"
 
 	bootconfig "github.com/OGKevin/talos-ext-rpi/pkg/bootConfig"
 )
@@ -58,9 +58,8 @@ var bootConfigLoaderCmd = &cobra.Command{
 // runBootConfigLoader performs the action for this command.
 func runBootConfigLoader(c *cobra.Command, args []string) error {
 	ctx := c.Context()
-	log := logrus.WithContext(ctx)
 
-	log.Info("Going to replace boot config...")
+	slog.InfoCtx(ctx, "Going to replace boot config...")
 
 	configRaw, err := bootconfig.LoadBootConfig(
 		ctx,
@@ -78,7 +77,7 @@ func runBootConfigLoader(c *cobra.Command, args []string) error {
 
 	defer func() {
 		if err := m.Unmount(0); err != nil {
-			log.WithError(err).Warn("failed to unmount boot parition.")
+			slog.WarnCtx(ctx, "failed to unmount boot partition", slog.Any("error", err))
 		}
 	}()
 
@@ -86,8 +85,8 @@ func runBootConfigLoader(c *cobra.Command, args []string) error {
 		return errors.Wrapf(err, "failed to replace existing boot config")
 	}
 
-	log.Info("config.txt replaced!")
-	log.Info("Don't forget to reboot for changes to take effect.")
+	slog.InfoCtx(ctx, "config.txt replaced!")
+	slog.InfoCtx(ctx, "Don't forget to reboot for changes to take effect.")
 
 	return nil
 }
