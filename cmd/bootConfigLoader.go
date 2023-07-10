@@ -1,13 +1,16 @@
 /*
 Copyright © 2023 Kevin Hellemun
-*/package cmd
+*/
+
+package cmd
 
 import (
-	bootconfig "github.com/OGKevin/talos-ext-rpi/pkg/bootConfig"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	bootconfig "github.com/OGKevin/talos-ext-rpi/pkg/bootConfig"
 )
 
 const (
@@ -15,21 +18,13 @@ const (
 	viperBootConfigPath = "boot.config.path"
 
 	flagAllowDefaultBootConfig  = "boot.allow-default-config"
-	viperAllowDefaultBootConfig = "booot.allowDefaultConfig"
+	viperAllowDefaultBootConfig = "boot.allowDefaultConfig"
 )
 
 // init register the command and it's flags.
 func init() {
 	rootCmd.AddCommand(bootConfigLoaderCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// bootConfigLoaderCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
 	bootConfigLoaderCmd.Flags().
 		String(
 			flagBootConfigPath,
