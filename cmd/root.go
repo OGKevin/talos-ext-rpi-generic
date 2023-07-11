@@ -74,7 +74,7 @@ func initConfig() {
 		cobra.CheckErr(err)
 
 		viper.AddConfigPath(home)
-		viper.AddConfigPath("var/etc/rpi-generic")
+		viper.AddConfigPath("/var/etc/rpi-generic")
 		viper.SetConfigType("yaml")
 		viper.SetConfigName("config")
 	}
