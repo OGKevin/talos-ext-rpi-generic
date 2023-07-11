@@ -6,14 +6,14 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/shirou/gopsutil/v3/disk"
+	"github.com/siderolabs/go-blockdevice/blockdevice/probe"
 	"github.com/u-root/u-root/pkg/mount"
 	"github.com/u-root/u-root/pkg/mount/block"
 	"golang.org/x/exp/slog"
 )
 
 const (
-	bootMountDir  = "/mnt/boot"
-	bootPartition = "/dev/mmcblk0p1"
+	bootMountDir = "/mnt/boot"
 )
 
 func MountBootPartition(ctx context.Context) (*mount.MountPoint, error) {
@@ -23,12 +23,19 @@ func MountBootPartition(ctx context.Context) (*mount.MountPoint, error) {
 		}
 	}
 
-	d, err := block.Device(bootPartition)
+	bootPartitionDevice, err := probe.GetDevWithFileSystemLabel("BOOT")
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to get device with BOOT partition")
+	}
+
+	d, err := block.Device(bootPartitionDevice.Path)
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not init block device")
 	}
 
-	slog.DebugCtx(ctx, "mounting partition", slog.String("disk", bootPartition), slog.String("mount_dir", bootMountDir))
+	slog.DebugCtx(
+		ctx, "mounting partition", slog.String("disk", bootPartitionDevice.Path), slog.String("mount_dir", bootMountDir),
+	)
 	if err := ensureDirectory(ctx, bootMountDir); err != nil {
 		return nil, errors.Wrapf(err, "failed to ensure mount dir exists.")
 	}
