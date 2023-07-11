@@ -11,10 +11,10 @@ tasks:
       - go build -o _out/generic-pi .
   build-container:
     cmds:
-      - docker buildx build --platform linux/arm64,linux/amd64 . -t ghcr.io/ogkevin/talos-ext-generic-pi:{{.TAG}} 
+      - docker buildx build --platform linux/arm64 . -t ghcr.io/ogkevin/talos-ext-generic-pi:{{.TAG}}
   push-container:
     cmds:
-      - docker buildx build --platform linux/arm64,linux/amd64 . -t ghcr.io/ogkevin/talos-ext-generic-pi:{{.TAG}} --push
+      - docker buildx build --platform linux/arm64 . -t ghcr.io/ogkevin/talos-ext-generic-pi:{{.TAG}} --push
   default:
     cmds:
       - echo "{{.GREETING}}"
