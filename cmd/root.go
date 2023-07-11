@@ -58,6 +58,7 @@ func init() {
 		StringVar(&cfgFile, "config", "", "config file (default is $HOME/.talos-ext-rpi.yaml)")
 
 	rootCmd.PersistentFlags().StringVar(&logLevel, "log.level", "info", "")
+	_ = viper.BindPFlag("log.level", bootConfigLoaderCmd.Flags().Lookup("log.level"))
 
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
@@ -89,7 +90,13 @@ func initConfig() {
 func setupLogging() {
 	var lvl slog.Level
 
-	switch logLevel {
+	lvlString := viper.GetString("log.level")
+
+	if logLevel != "" && lvlString == "" {
+		lvlString = logLevel
+	}
+
+	switch lvlString {
 	case "info":
 		lvl = slog.LevelInfo
 	case "debug":
