@@ -3,7 +3,7 @@
 version: "3"
 vars:
   GREETING: Hello, World!
-  TAG: v0.0.0 # x-release-please-version
+  TAG: v1.0.0 # x-release-please-version
 tasks:
   build-binary:
     cmds:
