@@ -8,7 +8,8 @@
       "prerelease": true,
       "extra-files": [
         "Taskfile.yml"
-      ]
+      ],
+      "release-type": "go"
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
