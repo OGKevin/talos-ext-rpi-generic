@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/pkg/errors v0.9.1
-	github.com/shirou/gopsutil/v3 v3.23.7
+	github.com/shirou/gopsutil/v3 v3.23.8
 	github.com/siderolabs/go-blockdevice v0.4.6
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
@@ -31,7 +31,7 @@ require (
 	github.com/subosito/gotenv v1.4.2 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	golang.org/x/sys v0.11.0 // indirect
-	golang.org/x/text v0.7.0 // indirect
+	golang.org/x/text v0.9.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
